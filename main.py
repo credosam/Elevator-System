@@ -1,9 +1,11 @@
 from Tkinter import *
 import time
+from elevatorButton import *
+from requestButton import *
+from elevator import *
+from floorDoors import *
 
 allRequestButtons = []
-allRequestUp = []
-allRequestDown = []
 allElevators = []
 allFloorDoors = []
 allRequestEle = []
@@ -66,7 +68,7 @@ class Example(Frame):
 		arc5 = self.canvas1.create_line(coord5,width=10, fill="black")
 
 		#floordoors
-		for i in range(4):
+		for i in range(4): 
 			for j in range(7):
 				allFloorDoors.append(floorDoor(self.canvas1,j,i))
 
@@ -172,107 +174,6 @@ class Example(Frame):
 			floordoor.update() 
 
 		self.parent.after(5,self.simulate)
-
-class ElevatorButtons(object):
-	def __init__(self,w,elevatorNo):
-		self.elevatorNo = elevatorNo
-		self.window = w
-		self.makeButtons()
-
-	def makeButtons(self):
-		self.Button1 = Button(self.window, text="1", command=lambda: self.createRequestEle(1))
-		self.Button1.place(x=-210+(260*self.elevatorNo),y=5)
-
-		self.Button2 = Button(self.window, text="2", command=lambda: self.createRequestEle(2))
-		self.Button2.place(x=-170+(260*self.elevatorNo),y=5)
-
-		self.Button3 = Button(self.window, text="3", command=lambda: self.createRequestEle(3))
-		self.Button3.place(x=-130+(260*self.elevatorNo),y=5)
-
-		self.Button4 = Button(self.window, text="4", command=lambda: self.createRequestEle(4))
-		self.Button4.place(x=-90+(260*self.elevatorNo),y=5)
-
-		self.Button5 = Button(self.window, text="5", command=lambda: self.createRequestEle(5))
-		self.Button5.place(x=-50+(260*self.elevatorNo),y=5)
-
-		self.Button6 = Button(self.window, text="6", command=lambda: self.createRequestEle(6))
-		self.Button6.place(x=-130+(260*self.elevatorNo),y=40)
-
-		self.Button7 = Button(self.window, text="7", command=lambda: self.createRequestEle(7))
-		self.Button7.place(x=-90+(260*self.elevatorNo),y=40)
-
-		self.stopButton = Button(self.window, text="||", command=lambda: self.createRequestEle(0))
-		self.stopButton.place(x=-50+(260*self.elevatorNo),y=40)
-
-	def createRequestEle(self,requestedFloor):
-		if self.elevatorNo == 1:
-			allRequestEle1.append(requestedFloor)
-		elif self.elevatorNo == 2:
-			allRequestEle2.append(requestedFloor)
-		elif self.elevatorNo == 3:
-			allRequestEle3.append(requestedFloor)
-		else:
-			allRequestEle4.append(requestedFloor)
-
-class RequestButton(object):
-	def __init__(self, w, floorNo):
-		self.floorNo = floorNo
-		self.window = w
-		self.rButton1 = Button(self.window, text="UP", command=self.createRequestUp)
-		self.rButton2 = Button(self.window, text="DN", command=self.createRequestDown)
-		self.rButton1.grid(column=2,row=3*floorNo+1,padx=50)
-		self.rButton2.grid(column=2,row=3*floorNo+2,pady=6)
-		
-	def createRequestUp(self):
-		allRequestUp.append(self.floorNo)
-
-	def createRequestDown(self):
-		allRequestDown.append(self.floorNo)
-
-class Elevator(object):
-	def __init__(self, w, ele,flr):
-		self.elevatorNo = ele
-		self.window = w
-		self.direction = None
-		self.opened = False
-		self.floorno = flr
-		self.requests = []
-		self.x = -210+(260*self.elevatorNo)
-		self.y = -50+(100*self.floorno)
-		self.body = self.window.create_rectangle(self.x,self.y,self.x+50,self.y+90, fill="red")
-
-	def update(self,w,vel):
-		self.vel = vel
-		self.window = w
-		self.window.move(self.body,0, self.vel)
-		self.x = self.window.coords(self.body)[0]
-		self.y = self.window.coords(self.body)[1]
-		self.window.update()
-		
-class floorDoor(object):
-	def __init__(self,w,floorNo,elevatorNo):
-		self.elevatorNo = elevatorNo+1
-		self.floorNo = floorNo+1
-		a = -210+(260*self.elevatorNo)
-		b = -50+(100*self.floorNo)
-		self.window = w
-		self.label = Label(self.window,text = 1,background="grey")
-		self.label1 = Label(self.window, text = "Lift on floor:",background="grey")
-		self.label1.place(x= a+70,y=b+20)
-		self.label.place(x=a+70,y=b+40)
-		self.body = self.window.create_rectangle(a,b,a+50,b+90,fill="#333333")
-
-	def update(self):
-		global Lift1, Lift2, Lift3, Lift4
-		if(self.elevatorNo == 1):
-			No = int(Lift1)
-		elif(self.elevatorNo == 2):
-			No = int(Lift2)
-		elif(self.elevatorNo == 3):
-			No = int(Lift3)
-		else:
-			No = int(Lift4)
-		self.label.config(text = No)
 
 def main():
   
