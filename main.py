@@ -8,21 +8,17 @@ from floorDoors import *
 allRequestButtons = []
 allElevators = []
 allFloorDoors = []
-allRequestEle = []
 allElevatorButtons = []
 # allRequestEle = [[]]
-allRequestEle1 = []
-allRequestEle2 = []
-allRequestEle3 = []
-allRequestEle4 = []
 # allRequestEle.append(allRequestEle4)
 # allRequestEle.append(allRequestEle3)
 # allRequestEle.append(allRequestEle2)
 # allRequestEle.append(allRequestEle1)
-Lift1 = 1
-Lift2 = 2
-Lift3 = 3
-Lift4 = 4
+
+Lift1 = 0
+Lift2 = 0
+Lift3 = 0
+Lift4 = 0
 
 class Example(Frame):
   
@@ -42,7 +38,7 @@ class Example(Frame):
 		label.grid(row = 0,column=0,padx=10)
 
 		for i in range(7):
-			label = Label(leftframe, text=i+1,font = "Helvetica 14 bold",background="grey")
+			label = Label(leftframe, text=6-i,font = "Helvetica 14 bold",background="grey")
 			label.grid(row=3*(i+1),column=0,padx=10)
 
 		for i in range(7):
@@ -74,7 +70,7 @@ class Example(Frame):
 
 		#elevators
 		for i in range(4):
-			allElevators.append(Elevator(self.canvas1,i+1,1))
+			allElevators.append(Elevator(self.canvas1,i+1,7))
 
 		for i in range(4):
 			allElevatorButtons.append(ElevatorButtons(self.canvas1,i+1))
@@ -85,43 +81,43 @@ class Example(Frame):
 		maxdiff = 10
 		ele = None
 		for elevator in allElevators:
-			if(elevator.direction == "UP"): #and elevator.floorno > destinedFloor):
-				if(abs(elevator.floorno-destinedFloor) <= maxdiff):
+			if(elevator.direction == "UP"and elevator.floorno > destinedFloor):
+				if(abs(elevator.floorno-destinedFloor) < maxdiff):
 					maxdiff = elevator.floorno-destinedFloor
 					ele = elevator
 		if ele == None:
 			for elevator in allElevators:
 				if(elevator.direction == None):
-					if(abs(elevator.floorno-destinedFloor) <= maxdiff):
+					if(abs(elevator.floorno-destinedFloor) < maxdiff):
 						maxdiff = elevator.floorno-destinedFloor
 						ele = elevator
-		if ele == None:
-			for elevator in allElevators:
-				if(abs(elevator.floorno-destinedFloor) <= maxdiff):
-					maxdiff = elevator.floorno-destinedFloor
-					ele = elevator
+		# if ele == None:
+		# 	for elevator in allElevators:
+		# 		if(abs(elevator.floorno-destinedFloor) < maxdiff):
+		# 			maxdiff = elevator.floorno-destinedFloor
+		# 			ele = elevator
 		return ele
 
 	def findNearestDown(self,destinedFloor):
 		maxdiff = 10
 		ele = None
 		for elevator in allElevators:
-			if(elevator.direction == "DOWN"):# and elevator.floorno < destinedFloor):
-				if(abs(elevator.floorno-destinedFloor) <= maxdiff):
+			if(elevator.direction == "DOWN" and elevator.floorno < destinedFloor):
+				if(abs(elevator.floorno-destinedFloor) < maxdiff):
 					maxdiff = elevator.floorno-destinedFloor
 					ele = elevator
 		if ele == None:
 			for elevator in allElevators:
 				if(elevator.direction == None):
-					if(abs(elevator.floorno-destinedFloor) <= maxdiff):
+					if(abs(elevator.floorno-destinedFloor) < maxdiff):
 						maxdiff = elevator.floorno-destinedFloor
 						ele = elevator
 
-		if ele == None:
-			for elevator in allElevators:
-				if(abs(elevator.floorno-destinedFloor) <= maxdiff):
-					maxdiff = elevator.floorno-destinedFloor
-					ele = elevator
+		# if ele == None:
+		# 	for elevator in allElevators:
+		# 		if(abs(elevator.floorno-destinedFloor) < maxdiff):
+		# 			maxdiff = elevator.floorno-destinedFloor
+		# 			ele = elevator
 
 		return ele
 
@@ -129,32 +125,74 @@ class Example(Frame):
 		global Lift1, Lift2, Lift3, Lift4
 		for request in allRequestUp:
 			nearEle = self.findNearestUp(request)
-			nearEle.requests.append(request)
-			del allRequestUp[allRequestUp.index(request)]
+			if nearEle is not None:
+				nearEle.direction = "UP"
+				nearEle.requests.append(request)
+				del allRequestUp[allRequestUp.index(request)]
 
 		for request in allRequestDown:
 			nearEle = self.findNearestDown(request)
-			nearEle.requests.append(request)
-			del allRequestDown[allRequestDown.index(request)]
+			if nearEle is not None:
+				nearEle.direction = "DOWN"
+				nearEle.requests.append(request)
+				del allRequestDown[allRequestDown.index(request)]
+
+		for elevator in allElevators:
+			if elevator.direction == "UP":
+				elevator.requests.sort(reverse=True)
+			elif elevator.direction == "DOWN":
+				elevator.requests.sort()
+
+		# for elevator in allElevators:
+		# 	if len(elevator.requests) != 0:
+		# 		print "allright"
+		# 		print elevator.elevatorNo
+		# 		print elevator.requests
 
 		for elevator in allElevators:
 			if len(elevator.requests) != 0:
 				if elevator.y < -50+(100*elevator.requests[0]):
 					elevator.update(self.canvas1,1)
 					elevator.floorno = (elevator.y+50)/100
-					elevator.direction = "DOWN"
+					# elevator.direction = "DOWN"
 
 				if elevator.y > -50+(100*elevator.requests[0]):
 					elevator.update(self.canvas1,-1)
 					elevator.floorno = (elevator.y+50)/100
-					elevator.direction = "UP"
+					# elevator.direction = "UP"
 
 				if elevator.y == -50+(100*elevator.requests[0]):
 					del elevator.requests[0]
 					elevator.floorno = (elevator.y+50)/100
+					elevator.open = True
+					elevator.count = 0
+					# elevator.gateOpen()
 
-				# if len(elevator.requests) == 0:
-				# 	elevator.direction = None
+			if elevator.open == True:
+				if elevator.count < 26:
+					elevator.gateOpen(elevator.count)
+					sleep(0.01)
+					elevator.count = elevator.count + 1
+				elif elevator.count >= 26 and elevator.count <51:
+					elevator.gateClose(elevator.count-25)
+					sleep(0.01)
+					elevator.count = elevator.count + 1
+				else:
+					elevator.open = False
+					elevator.count = 0
+
+			if elevator.open == True:
+				if(elevator.elevatorNo == 1):
+					elevator.requests.extend(allRequestEle1)
+
+				if(elevator.elevatorNo == 2):
+					elevator.requests.extend(allRequestEle2)
+
+				if(elevator.elevatorNo == 3):
+					elevator.requests.extend(allRequestEle3)
+
+				if(elevator.elevatorNo == 4):
+					elevator.requests.extend(allRequestEle4)
 
 		for elevator in allElevators:
 			if(elevator.elevatorNo == 1):
@@ -171,7 +209,7 @@ class Example(Frame):
 			
 
 		for floordoor in allFloorDoors:
-			floordoor.update() 
+			floordoor.update(Lift1,Lift2,Lift3,Lift4) 
 
 		self.parent.after(5,self.simulate)
 
