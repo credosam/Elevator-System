@@ -3,6 +3,10 @@ allRequestEle1 = []
 allRequestEle2 = []
 allRequestEle3 = []
 allRequestEle4 = []
+elevatorStop1 = False
+elevatorStop2 = False
+elevatorStop3 = False
+elevatorStop4 = False
 
 class ElevatorButtons(object):
 	def __init__(self,w,elevatorNo):
@@ -32,16 +36,26 @@ class ElevatorButtons(object):
 		self.Button6 = Button(self.window, text="6", command=lambda: self.createRequestEle(1))
 		self.Button6.place(x=-90+(260*self.elevatorNo),y=40)
 
-		self.stopButton = Button(self.window, text="||", command=lambda: self.createRequestEle(1))
+		self.stopButton = Button(self.window, text="||", command=lambda: self.stopRequestEle())
 		self.stopButton.place(x=-50+(260*self.elevatorNo),y=40)
 
 	def createRequestEle(self,requestedFloor):
 		if self.elevatorNo == 1:
 			allRequestEle1.append(requestedFloor)
-			print "GGGGGGG" + str(requestedFloor)
 		elif self.elevatorNo == 2:
 			allRequestEle2.append(requestedFloor)
 		elif self.elevatorNo == 3:
 			allRequestEle3.append(requestedFloor)
 		else:
 			allRequestEle4.append(requestedFloor)
+
+	def stopRequestEle(self):
+		global elevatorStop1,elevatorStop2,elevatorStop3,elevatorStop4
+		if self.elevatorNo == 1:
+			elevatorStop1 = True
+		elif self.elevatorNo == 2:
+			elevatorStop2 = True
+		elif self.elevatorNo == 3:
+			elevatorStop3 = True
+		else:
+			elevatorStop4 = True

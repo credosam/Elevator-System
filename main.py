@@ -1,5 +1,6 @@
 from Tkinter import *
 import time
+import elevatorButton
 from elevatorButton import *
 from requestButton import *
 from elevator import *
@@ -9,11 +10,6 @@ allRequestButtons = []
 allElevators = []
 allFloorDoors = []
 allElevatorButtons = []
-# allRequestEle = [[]]
-# allRequestEle.append(allRequestEle4)
-# allRequestEle.append(allRequestEle3)
-# allRequestEle.append(allRequestEle2)
-# allRequestEle.append(allRequestEle1)
 
 Lift1 = 0
 Lift2 = 0
@@ -83,19 +79,14 @@ class Example(Frame):
 		for elevator in allElevators:
 			if(elevator.direction == "UP"and elevator.floorno > destinedFloor):
 				if(abs(elevator.floorno-destinedFloor) < maxdiff):
-					maxdiff = elevator.floorno-destinedFloor
+					maxdiff = abs(elevator.floorno-destinedFloor)
 					ele = elevator
 		if ele == None:
 			for elevator in allElevators:
 				if(elevator.direction == None):
 					if(abs(elevator.floorno-destinedFloor) < maxdiff):
-						maxdiff = elevator.floorno-destinedFloor
+						maxdiff = abs(elevator.floorno-destinedFloor)
 						ele = elevator
-		# if ele == None:
-		# 	for elevator in allElevators:
-		# 		if(abs(elevator.floorno-destinedFloor) < maxdiff):
-		# 			maxdiff = elevator.floorno-destinedFloor
-		# 			ele = elevator
 		return ele
 
 	def findNearestDown(self,destinedFloor):
@@ -104,21 +95,14 @@ class Example(Frame):
 		for elevator in allElevators:
 			if(elevator.direction == "DOWN" and elevator.floorno < destinedFloor):
 				if(abs(elevator.floorno-destinedFloor) < maxdiff):
-					maxdiff = elevator.floorno-destinedFloor
+					maxdiff = abs(elevator.floorno-destinedFloor)
 					ele = elevator
 		if ele == None:
 			for elevator in allElevators:
 				if(elevator.direction == None):
 					if(abs(elevator.floorno-destinedFloor) < maxdiff):
-						maxdiff = elevator.floorno-destinedFloor
+						maxdiff = abs(elevator.floorno-destinedFloor)
 						ele = elevator
-
-		# if ele == None:
-		# 	for elevator in allElevators:
-		# 		if(abs(elevator.floorno-destinedFloor) < maxdiff):
-		# 			maxdiff = elevator.floorno-destinedFloor
-		# 			ele = elevator
-
 		return ele
 
 	def simulate(self):
@@ -143,14 +127,8 @@ class Example(Frame):
 			elif elevator.direction == "DOWN":
 				elevator.requests.sort()
 
-		# for elevator in allElevators:
-		# 	if len(elevator.requests) != 0:
-		# 		print "allright"
-		# 		print elevator.elevatorNo
-		# 		print elevator.requests
-
 		for elevator in allElevators:
-			if len(elevator.requests) != 0:
+			if len(elevator.requests) != 0 and elevator.open is not True:
 				if elevator.y < -50+(100*elevator.requests[0]):
 					elevator.update(self.canvas1,1)
 					elevator.floorno = (elevator.y+50)/100
@@ -166,33 +144,63 @@ class Example(Frame):
 					elevator.floorno = (elevator.y+50)/100
 					elevator.open = True
 					elevator.count = 0
-					# elevator.gateOpen()
+
+			if len(elevator.requests) == 0 and elevator.open == False:
+				elevator.direction = None
 
 			if elevator.open == True:
 				if elevator.count < 26:
 					elevator.gateOpen(elevator.count)
 					sleep(0.01)
 					elevator.count = elevator.count + 1
-				elif elevator.count >= 26 and elevator.count <51:
+
+				elif elevator.count >= 26 and elevator.count < 51:
 					elevator.gateClose(elevator.count-25)
 					sleep(0.01)
 					elevator.count = elevator.count + 1
-				else:
-					elevator.open = False
-					elevator.count = 0
 
-			if elevator.open == True:
+					if elevator.elevatorNo == 1:
+						if elevatorButton.elevatorStop1 == True:
+							elevator.count = elevator.count-25
+							elevatorButton.elevatorStop1 = False
+
+					elif elevator.elevatorNo == 2:
+						if elevatorButton.elevatorStop2 == True:
+							elevator.count = elevator.count-25
+							elevatorButton.elevatorStop2 = False
+
+					elif elevator.elevatorNo == 3:
+						if elevatorButton.elevatorStop3 == True:
+							elevator.count = elevator.count-25
+							elevatorButton.elevatorStop3 = False
+
+					elif elevator.elevatorNo == 4:
+						if elevatorButton.elevatorStop4 == True:
+							elevator.count = elevator.count-25
+							elevatorButton.elevatorStop4 = False
+
+				elif elevator.count > 50:
+					elevator.open = False
+					elevator.taken = True
+
+			if elevator.taken == True:
 				if(elevator.elevatorNo == 1):
 					elevator.requests.extend(allRequestEle1)
+					del allRequestEle1[:]
 
 				if(elevator.elevatorNo == 2):
 					elevator.requests.extend(allRequestEle2)
+					del allRequestEle2[:]
 
 				if(elevator.elevatorNo == 3):
 					elevator.requests.extend(allRequestEle3)
+					del allRequestEle3[:]
 
 				if(elevator.elevatorNo == 4):
 					elevator.requests.extend(allRequestEle4)
+					del allRequestEle4[:]
+
+				elevator.taken = False
 
 		for elevator in allElevators:
 			if(elevator.elevatorNo == 1):
