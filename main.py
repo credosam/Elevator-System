@@ -16,7 +16,7 @@ Lift2 = 0
 Lift3 = 0
 Lift4 = 0
 
-class Example(Frame):
+class ElevatorSimulation(Frame):
   
 	def __init__(self, parent):
 		Frame.__init__(self, parent, background="grey") 
@@ -154,32 +154,38 @@ class Example(Frame):
 					sleep(0.01)
 					elevator.count = elevator.count + 1
 
-				elif elevator.count >= 26 and elevator.count < 51:
-					elevator.gateClose(elevator.count-25)
+				elif elevator.count >= 26 and elevator.delay <200 and elevator.count < 226:
+					elevator.delay = elevator.delay+1
+					elevator.count = elevator.count + 1
+
+
+				elif elevator.count >= 226 and elevator.count < 251:
+					elevator.delay = 0
+					elevator.gateClose(elevator.count-225)
 					sleep(0.01)
 					elevator.count = elevator.count + 1
 
 					if elevator.elevatorNo == 1:
 						if elevatorButton.elevatorStop1 == True:
-							elevator.count = elevator.count-25
+							elevator.count = elevator.count-225
 							elevatorButton.elevatorStop1 = False
 
 					elif elevator.elevatorNo == 2:
 						if elevatorButton.elevatorStop2 == True:
-							elevator.count = elevator.count-25
+							elevator.count = elevator.count-225
 							elevatorButton.elevatorStop2 = False
 
 					elif elevator.elevatorNo == 3:
 						if elevatorButton.elevatorStop3 == True:
-							elevator.count = elevator.count-25
+							elevator.count = elevator.count-225
 							elevatorButton.elevatorStop3 = False
 
 					elif elevator.elevatorNo == 4:
 						if elevatorButton.elevatorStop4 == True:
-							elevator.count = elevator.count-25
+							elevator.count = elevator.count-225
 							elevatorButton.elevatorStop4 = False
 
-				elif elevator.count > 50:
+				elif elevator.count > 250:
 					elevator.open = False
 
 			if(elevator.elevatorNo == 1):
@@ -229,7 +235,7 @@ def main():
 	screenHeight = root.winfo_screenheight()
 	root.wm_geometry("%dx%d+%d+%d" % (screenWidth, screenHeight, posx, posy))
 
-	app = Example(root)
+	app = ElevatorSimulation(root)
 	root.mainloop()  
 
 

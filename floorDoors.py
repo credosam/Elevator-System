@@ -12,6 +12,7 @@ class floorDoor(object):
 		self.label1.place(x= a+70,y=b+20)
 		self.label.place(x=a+70,y=b+40)
 		self.body = self.window.create_rectangle(a,b,a+50,b+90,fill="#333333")
+		self.line = self.window.create_line(a+25,b,a+25,b+90,width=2, fill="black")
 
 	def update(self,Lift1,Lift2,Lift3,Lift4):
 		if(self.elevatorNo == 1):
