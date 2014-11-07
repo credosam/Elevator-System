@@ -181,26 +181,22 @@ class Example(Frame):
 
 				elif elevator.count > 50:
 					elevator.open = False
-					elevator.taken = True
 
-			if elevator.taken == True:
-				if(elevator.elevatorNo == 1):
-					elevator.requests.extend(allRequestEle1)
-					del allRequestEle1[:]
+			if(elevator.elevatorNo == 1):
+				elevator.requests.extend(allRequestEle1)
+				del allRequestEle1[:]
 
-				if(elevator.elevatorNo == 2):
-					elevator.requests.extend(allRequestEle2)
-					del allRequestEle2[:]
+			if(elevator.elevatorNo == 2):
+				elevator.requests.extend(allRequestEle2)
+				del allRequestEle2[:]
 
-				if(elevator.elevatorNo == 3):
-					elevator.requests.extend(allRequestEle3)
-					del allRequestEle3[:]
+			if(elevator.elevatorNo == 3):
+				elevator.requests.extend(allRequestEle3)
+				del allRequestEle3[:]
 
-				if(elevator.elevatorNo == 4):
-					elevator.requests.extend(allRequestEle4)
-					del allRequestEle4[:]
-
-				elevator.taken = False
+			if(elevator.elevatorNo == 4):
+				elevator.requests.extend(allRequestEle4)
+				del allRequestEle4[:]
 
 		for elevator in allElevators:
 			if(elevator.elevatorNo == 1):

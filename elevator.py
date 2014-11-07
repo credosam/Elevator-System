@@ -8,7 +8,6 @@ class Elevator(object):
 		self.direction = None
 		self.open = False
 		self.count = 0
-		self.taken = False
 		self.stop = False
 		self.floorno = flr
 		self.requests = []
